@@ -12,6 +12,7 @@ let mouseY = 0;
 let click = 0;
 let isDrawing = false;
 let existingLines = [];
+let result = [];
 
 
 function draw() {
@@ -75,7 +76,9 @@ function calculateIntersection(array, x3, y3, x4, y4) {
 
         const p = { x: px, y: py };
 
-        result.push(p);
+        if (firsttX <= px && secondX >= px && x3 <= px && x4 >= px || firstY <= py && secondY >= py && y3 <= py && y4 >= py) {
+            result.push(p)
+        }
     }
 
     return result
@@ -91,7 +94,6 @@ function onMouseClick(e) {
     }
 
     draw();
-    drawCircle(calculateIntersection(existingLines, startX, startY, mouseX, mouseY))
     onMouseSecondClick()
 }
 
@@ -109,17 +111,18 @@ function onMouseSecondClick() {
     }
 
     draw();
-    drawCircle(calculateIntersection(existingLines, startX, startY, mouseX, mouseY))
-
+    result = [...result, ...calculateIntersection(existingLines, startX, startY, mouseX, mouseY)]
+    drawCircle(result)
 }
 
 function onMousemove(e) {
+
     mouseX = e.clientX - bounds.left;
     mouseY = e.clientY - bounds.top;
 
     if (isDrawing) {
         draw();
-        drawCircle(calculateIntersection(existingLines, startX, startY, mouseX, mouseY))
+        drawCircle([...calculateIntersection(existingLines, startX, startY, mouseX, mouseY), ...result])
     }
 }
 
@@ -128,7 +131,7 @@ function collapseLine() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.fillStyle = "#808080";
     ctx.fillRect(0, 0, width, height);
-
+    result = []
     existingLines = []
 }
 
