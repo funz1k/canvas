@@ -9,18 +9,22 @@ let startX = 0;
 let startY = 0;
 let mouseX = 0;
 let mouseY = 0;
+// -------------
 let click = 0;
 let isDrawing = false;
+// ------------
 let existingLines = [];
 let result = [];
+// ---------------
 
-
-function draw() {
+function drawCanvas() {
     ctx.fillStyle = "#808080";
     ctx.fillRect(0, 0, width, height);
+}
+
+function drawLine() {
     ctx.strokeStyle = "black";
     ctx.beginPath();
-
     for (let i = 0; i < existingLines.length; ++i) {
         const line = existingLines[i];
         ctx.moveTo(line.firsttX, line.firstY);
@@ -35,7 +39,6 @@ function draw() {
         ctx.moveTo(startX, startY);
         ctx.lineTo(mouseX, mouseY);
         ctx.stroke();
-
     }
 }
 
@@ -93,7 +96,7 @@ function onMouseClick(e) {
         isDrawing = true;
     }
 
-    draw();
+    drawCanvas();
     onMouseSecondClick()
 }
 
@@ -110,7 +113,7 @@ function onMouseSecondClick() {
         click = 0
     }
 
-    draw();
+    drawLine()
     result = [...result, ...calculateIntersection(existingLines, startX, startY, mouseX, mouseY)]
     drawCircle(result)
 }
@@ -121,7 +124,8 @@ function onMousemove(e) {
     mouseY = e.clientY - bounds.top;
 
     if (isDrawing) {
-        draw();
+        drawCanvas();
+        drawLine()
         drawCircle([...calculateIntersection(existingLines, startX, startY, mouseX, mouseY), ...result])
     }
 }
@@ -140,7 +144,7 @@ function collapseLine() {
 canvas.addEventListener('click', onMouseClick);
 canvas.addEventListener('mousemove', onMousemove);
 collapsButton.addEventListener('click', collapseLine)
-draw();
+drawCanvas();
 
 
 
